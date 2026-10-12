@@ -1,0 +1,38 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum EmploymentType {
+  FULL_TIME @map("FULL_TIME")
+  PART_TIME @map("PART_TIME")
+  CONTRACT  @map("CONTRACT")
+
+  @@map("employment_type")
+}
+
+model Employee {
+  id             String         @id @default(uuid()) @db.Uuid
+  fullName       String         @map("full_name") @db.VarChar(120)
+  email          String         @unique @map("email") @db.VarChar(150)
+  jobTitle       String         @map("job_title") @db.VarChar(100)
+  department     String         @map("department") @db.VarChar(80)
+  country        String         @map("country") @db.Char(2)
+  currency       String         @map("currency") @db.Char(3)
+  annualSalary   Decimal        @map("annual_salary") @db.Decimal(12, 2)
+  employmentType EmploymentType @map("employment_type")
+  hireDate       DateTime       @map("hire_date") @db.Date
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([country, currency], name: "idx_employees_country_currency")
+  @@index([department, currency], name: "idx_employees_department_currency")
+  @@index([jobTitle, currency], name: "idx_employees_job_title_currency")
+  @@index([annualSalary], name: "idx_employees_annual_salary")
+  @@index([hireDate], name: "idx_employees_hire_date")
+  @@map("employees")
+}

@@ -77,3 +77,9 @@ I adopted a disciplined staged execution model, beginning with explicit agent ru
 - **Alternatives**: Full Next.js full-stack app or completely separated microservices with cross-origin CORS.
 - **Why**: Keeps frontend and backend testable independently with instant Vite HMR, while Express static serving eliminates production CORS overhead completely.
 
+### Stage 5: Database Schema & Migration
+- **Decision**: Modeled Employee entity in Prisma with `@map`/`@@map` for snake_case PostgreSQL table/column names, `Decimal(12, 2)` for currency values, composite indexes for query acceleration, and decoupled the domain service from Prisma using `IEmployeeRepository`.
+- **Alternatives**: Coupling services directly to Prisma singleton, or using SQLite without `percentile_cont` capabilities.
+- **Why**: Keeps database migrations production-ready while allowing services to be tested 100% in-memory with fake repositories, yielding lightning-fast, hermetic unit tests.
+
+
