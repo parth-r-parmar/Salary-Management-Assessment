@@ -92,6 +92,12 @@ I adopted a disciplined staged execution model, beginning with explicit agent ru
 - **Alternatives**: Placing business validation directly inside Express route callbacks or Prisma queries.
 - **Why**: Keeps business invariants completely decoupled from the transport layer, ensuring 100% test coverage without live database dependencies.
 
+### Stage 8: Insights & Analytics API
+- **Decision**: Implemented PostgreSQL native aggregations using Prisma `$queryRaw` with `percentile_cont(0.5 / 0.25 / 0.75) WITHIN GROUP (ORDER BY annual_salary)` for exact continuous percentiles and `GROUP BY` for headcount and min/max/avg. Grouped all aggregations strictly by currency with zero cross-currency pollution. Cast all database BigInts and Decimals to standard JavaScript numbers in SQL/repository to prevent JSON serialization crashes.
+- **Alternatives**: In-memory JavaScript array iteration for 10,000 employees, or converting disparate currencies to USD with static FX rates.
+- **Why**: Keeps server memory usage low, relies on database index buffers for single-digit millisecond query times, and prevents false compensation comparisons.
+
+
 
 
 
