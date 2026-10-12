@@ -93,9 +93,15 @@ I adopted a disciplined staged execution model, beginning with explicit agent ru
 - **Why**: Keeps business invariants completely decoupled from the transport layer, ensuring 100% test coverage without live database dependencies.
 
 ### Stage 8: Insights & Analytics API
-- **Decision**: Implemented PostgreSQL native aggregations using Prisma `$queryRaw` with `percentile_cont(0.5 / 0.25 / 0.75) WITHIN GROUP (ORDER BY annual_salary)` for exact continuous percentiles and `GROUP BY` for headcount and min/max/avg. Grouped all aggregations strictly by currency with zero cross-currency pollution. Cast all database BigInts and Decimals to standard JavaScript numbers in SQL/repository to prevent JSON serialization crashes.
+- **Decision**: Implemented PostgreSQL native aggregations using Prisma `$queryRaw` with `percentile_cont(0.5 / 0.25 / 0.75)` for exact continuous percentiles and `GROUP BY` for headcount and min/max/avg. Grouped all aggregations strictly by currency with zero cross-currency pollution. Cast all database BigInts and Decimals to standard JavaScript numbers in SQL/repository to prevent JSON serialization crashes.
 - **Alternatives**: In-memory JavaScript array iteration for 10,000 employees, or converting disparate currencies to USD with static FX rates.
 - **Why**: Keeps server memory usage low, relies on database index buffers for single-digit millisecond query times, and prevents false compensation comparisons.
+
+### Stage 9: Frontend UI - Employees Page
+- **Decision**: Implemented server-side DataGrid with server pagination and sorting, debounced search (`useDebounce` 300ms), multi-attribute filtering (country and department populated from `/api/meta/filters`), React Hook Form with Zod validation resolver for employee creation/editing, and delete confirmation dialogs with snackbars.
+- **Alternatives**: Client-side filtering/pagination by downloading all 10,000 employees into the browser.
+- **Why**: Transferring 10,000 records to the client degrades browser memory and initial render performance; server-side pagination with capped pageSize (25-100) ensures `< 100ms` rendering and lightweight payload sizes.
+
 
 
 
