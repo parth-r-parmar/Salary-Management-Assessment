@@ -2,16 +2,28 @@ import express, { Express, Request, Response } from 'express';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import { setupStaticServing } from './middleware/staticServe';
+import { errorHandler } from './middleware/errorHandler';
+import { EmployeeService } from './services/employeeService';
+import { EmployeeController } from './controllers/employeeController';
+import { createEmployeeRouter } from './routes/employeeRoutes';
+import { PrismaEmployeeRepository } from './repositories/PrismaEmployeeRepository';
+import { prisma } from './db/client';
 
 dotenv.config();
 
-export function createApp(): Express {
+export interface AppOptions {
+  employeeService?: EmployeeService;
+}
+
+export function createApp(options?: AppOptions): Express {
   const app: Express = express();
 
   // Basic middleware
-  app.use(helmet({
-    contentSecurityPolicy: false // Allow inline scripts/styles for React SPA in single container
-  }));
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+    })
+  );
   app.use(express.json());
 
   // Health check endpoint
@@ -19,12 +31,24 @@ export function createApp(): Express {
     res.status(200).json({
       status: 'ok',
       uptime: process.uptime(),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   });
 
+  // Employee Service & Controller Setup
+  const employeeService =
+    options?.employeeService || new EmployeeService(new PrismaEmployeeRepository(prisma));
+  const employeeController = new EmployeeController(employeeService);
+
+  // Mount API Routes
+  app.use('/api/employees', createEmployeeRouter(employeeController));
+  app.get('/api/meta/filters', employeeController.getFilters);
+
   // Setup SPA production static files
   setupStaticServing(app);
+
+  // Central Error Handler Middleware
+  app.use(errorHandler);
 
   return app;
 }

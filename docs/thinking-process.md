@@ -87,5 +87,11 @@ I adopted a disciplined staged execution model, beginning with explicit agent ru
 - **Alternatives**: Hardcoded JSON fixture or unseeded random generation.
 - **Why**: Pure generator is hermetically testable in unit tests without database dependency, while fixed seed guarantees repeatable evaluation across developer and deployment environments.
 
+### Stage 7: Employee CRUD API (TDD)
+- **Decision**: Implemented layered CRUD architecture: Zod request validation schemas, `EmployeeService` domain logic, `EmployeeController` HTTP translation, and central error handling middleware formatting errors into `{ error: { code, message, details } }`. Tested with Vitest using in-memory fakes and Supertest.
+- **Alternatives**: Placing business validation directly inside Express route callbacks or Prisma queries.
+- **Why**: Keeps business invariants completely decoupled from the transport layer, ensuring 100% test coverage without live database dependencies.
+
+
 
 
