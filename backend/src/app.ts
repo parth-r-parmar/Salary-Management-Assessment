@@ -7,12 +7,17 @@ import { EmployeeService } from './services/employeeService';
 import { EmployeeController } from './controllers/employeeController';
 import { createEmployeeRouter } from './routes/employeeRoutes';
 import { PrismaEmployeeRepository } from './repositories/PrismaEmployeeRepository';
+import { InsightsService } from './services/insightsService';
+import { InsightsController } from './controllers/insightsController';
+import { createInsightsRouter } from './routes/insightsRoutes';
+import { PrismaInsightsRepository } from './repositories/PrismaInsightsRepository';
 import { prisma } from './db/client';
 
 dotenv.config();
 
 export interface AppOptions {
   employeeService?: EmployeeService;
+  insightsService?: InsightsService;
 }
 
 export function createApp(options?: AppOptions): Express {
@@ -35,13 +40,18 @@ export function createApp(options?: AppOptions): Express {
     });
   });
 
-  // Employee Service & Controller Setup
+  // Services & Controllers Setup
   const employeeService =
     options?.employeeService || new EmployeeService(new PrismaEmployeeRepository(prisma));
   const employeeController = new EmployeeController(employeeService);
 
+  const insightsService =
+    options?.insightsService || new InsightsService(new PrismaInsightsRepository(prisma));
+  const insightsController = new InsightsController(insightsService);
+
   // Mount API Routes
   app.use('/api/employees', createEmployeeRouter(employeeController));
+  app.use('/api/insights', createInsightsRouter(insightsController));
   app.get('/api/meta/filters', employeeController.getFilters);
 
   // Setup SPA production static files
