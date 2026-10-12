@@ -71,3 +71,9 @@ I adopted a disciplined staged execution model, beginning with explicit agent ru
 - **Decision**: Documented end-to-end architecture with Mermaid diagrams, REST API contracts, data model with indexes, and ADR 001.
 - **Alternatives**: Jumping directly into code scaffolding.
 - **Why**: Clarifies domain interfaces, error response formats, and percentile computation strategies before writing code.
+
+### Stage 4: Monorepo Scaffolding
+- **Decision**: Decoupled Express backend and Vite/React frontend while configuring dev proxy and single-container production static asset serving.
+- **Alternatives**: Full Next.js full-stack app or completely separated microservices with cross-origin CORS.
+- **Why**: Keeps frontend and backend testable independently with instant Vite HMR, while Express static serving eliminates production CORS overhead completely.
+
