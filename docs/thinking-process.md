@@ -102,6 +102,12 @@ I adopted a disciplined staged execution model, beginning with explicit agent ru
 - **Alternatives**: Client-side filtering/pagination by downloading all 10,000 employees into the browser.
 - **Why**: Transferring 10,000 records to the client degrades browser memory and initial render performance; server-side pagination with capped pageSize (25-100) ensures `< 100ms` rendering and lightweight payload sizes.
 
+### Stage 10: Frontend UI - Insights Dashboard
+- **Decision**: Built an analytics dashboard with KPI overview cards, explicit country scope context selector ensuring zero cross-currency mixing, sortable percentiles table (min, P25, median P50, P75, max, avg), `@mui/x-charts` salary distribution histogram, and ranked top earners list.
+- **Alternatives**: Aggregating currencies into a single combined chart using speculative exchange rates.
+- **Why**: Keeps compensation metrics truthful and actionable for the HR Manager, allowing direct drill-down by country, job title, and department.
+
+
 
 
 
