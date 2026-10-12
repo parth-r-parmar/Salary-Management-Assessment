@@ -107,6 +107,12 @@ I adopted a disciplined staged execution model, beginning with explicit agent ru
 - **Alternatives**: Aggregating currencies into a single combined chart using speculative exchange rates.
 - **Why**: Keeps compensation metrics truthful and actionable for the HR Manager, allowing direct drill-down by country, job title, and department.
 
+### Stage 11: Frontend Component & Hook Tests
+- **Decision**: Wrote fast, deterministic unit and component tests with Vitest + React Testing Library for formatting utilities (`formatSalary`, `formatDate`), filter interactions, delete confirmation dialogs, summary cards with currency chips, and compensation tables.
+- **Alternatives**: End-to-end tests with real network or testing internal MUI styles.
+- **Why**: Keeps test execution fast (< 20 seconds), hermetic, and resilient against visual/CSS refactoring while verifying critical UI behaviors.
+
+
 
 
 
