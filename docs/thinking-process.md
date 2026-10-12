@@ -112,6 +112,12 @@ I adopted a disciplined staged execution model, beginning with explicit agent ru
 - **Alternatives**: End-to-end tests with real network or testing internal MUI styles.
 - **Why**: Keeps test execution fast (< 20 seconds), hermetic, and resilient against visual/CSS refactoring while verifying critical UI behaviors.
 
+### Stage 12: Performance Benchmarking & Hardening
+- **Decision**: Verified query execution profiles using `EXPLAIN ANALYZE`, confirmed sub-15ms latency across percentiles and list queries with B-tree composite indexes, integrated Helmet security headers, added `express-rate-limit` (300 req/15min), Pino logging, and implemented SIGTERM/SIGINT graceful shutdown with Prisma connection pool draining. Documented keyset pagination, Redis caching, and materialized view trade-offs in `docs/performance.md`.
+- **Alternatives**: Leaving endpoints unmetered or running aggregation inside Node.js event loop.
+- **Why**: Production readiness requires proactive resilience against denial of service, memory leaks, and unclosed connection pools during container scaling.
+
+
 
 
 
