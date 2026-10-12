@@ -82,4 +82,10 @@ I adopted a disciplined staged execution model, beginning with explicit agent ru
 - **Alternatives**: Coupling services directly to Prisma singleton, or using SQLite without `percentile_cont` capabilities.
 - **Why**: Keeps database migrations production-ready while allowing services to be tested 100% in-memory with fake repositories, yielding lightning-fast, hermetic unit tests.
 
+### Stage 6: Deterministic 10k Employee Seed Script
+- **Decision**: Developed a pure, deterministic generator with `@faker-js/faker` (seed `42`) supporting 10 distinct countries, mapped currencies, departments, job titles, and realistic salary bands. Implemented batch insertions of 1,000 using `createMany`.
+- **Alternatives**: Hardcoded JSON fixture or unseeded random generation.
+- **Why**: Pure generator is hermetically testable in unit tests without database dependency, while fixed seed guarantees repeatable evaluation across developer and deployment environments.
+
+
 
